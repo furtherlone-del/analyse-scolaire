@@ -207,7 +207,7 @@ def print_report(summary: dict) -> None:
     ce = summary["counter_examples"]
 
     print("=" * 65)
-    print("QUESTION 2 — Bivariate analysis: attendance → average grade")
+    print(" Bivariate analysis ")
     print("=" * 65)
     print("\n--- Normality tests (Shapiro-Wilk) ---")
     for var, res in summary["normality"].items():

@@ -1,7 +1,7 @@
 app: generate analyse
 
 # Lance toute l'application (génération + analyses)
-s: app
+up: app
 
 # Génère le jeu de données uniquement
 generate:

@@ -175,7 +175,7 @@ def print_report(summary: dict) -> None:
     sel = summary["k_selection"]
     profiles = summary["profiles"]
     print("=" * 60)
-    print("QUESTION 3 — Unsupervised Classification (K-Means)")
+    print("Unsupervised Classification (K-Means)")
     print("=" * 60)
     print(f"\nk selected: {sel['k_selected']}")
     for k in sorted(sel['silhouettes']):

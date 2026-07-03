@@ -159,7 +159,7 @@ def print_report(summary: dict) -> None:
     z = summary["zscore_detection"]
 
     print("=" * 60)
-    print("QUESTION 1 — Analysis of Average Grade (Theme D)")
+    print("Analysis of Average Grade ")
     print("=" * 60)
     print(f"\nSample size: {s['n']} students\n")
     print("--- Central Tendency ---")

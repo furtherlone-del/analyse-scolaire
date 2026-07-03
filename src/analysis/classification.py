@@ -166,7 +166,7 @@ def print_report(summary: dict) -> None:
     tr = summary["performances"]["decision_tree"]
     err = summary["error_analysis"]
     print("=" * 65)
-    print("QUESTION 4 — Supervised Classification of Majors")
+    print("Supervised Classification of Majors")
     print("=" * 65)
     print(f"\nSelected model: {summary['selected_model']}")
     for name, m in [("Logistic Regression", lr), ("Decision Tree", tr)]:

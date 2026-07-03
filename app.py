@@ -27,7 +27,7 @@ def generate(cfg: dict) -> pd.DataFrame:
     seed = name_to_seed(chef)
     df = generate_dataset(seed)
 
-    print("=== Data Generation — Theme D ===")
+    print("=== Data Generation ===")
     print(f"Group leader     : {chef}")
     print(f"Normalized name  : {normalized}")
     print(f"Seed             : {seed}")
@@ -60,16 +60,16 @@ def run_analyses() -> None:
     from src.analysis.clustering import run as run_q3, print_report as pr_q3
     from src.analysis.classification import run as run_q4, print_report as pr_q4
 
-    print("\n>>> Question 1 — Univariate analysis <<<")
+    print("\n Univariate analysis ")
     pr_q1(run_q1(cfg))
 
-    print("\n>>> Question 2 — Bivariate analysis <<<")
+    print("\n Bivariate analysis ")
     pr_q2(run_q2(cfg))
 
-    print("\n>>> Question 3 — Unsupervised classification <<<")
+    print("\n Unsupervised classification ")
     pr_q3(run_q3(cfg))
 
-    print("\n>>> Question 4 — Supervised classification <<<")
+    print("\nSupervised classification ")
     pr_q4(run_q4(cfg))
 
     print("\n" + "=" * 65)
@@ -79,7 +79,7 @@ def run_analyses() -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="INF232 Theme D — Complete Application")
+    parser = argparse.ArgumentParser(description="Complete Application")
     parser.add_argument("--generate-only", action="store_true", help="Generate data without running analyses")
     return parser.parse_args()
 
