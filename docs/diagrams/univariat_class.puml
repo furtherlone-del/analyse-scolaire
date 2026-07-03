@@ -1,0 +1,45 @@
+@startuml
+skinparam shadowing false
+
+title Q1 - Analyse univariee
+
+class univariat {
+INDICATOR
+INDICATOR_LABEL
+OUTPUT_DIR
+--
+compute_descriptive_stats(series)
+detect_outliers_iqr(df, column, multiplier)
+detect_outliers_zscore(df, column, threshold)
+plot_histogram(series, stats, path)
+plot_boxplot(series, bounds, outliers, path)
+run(cfg)
+print_report(summary)
+}
+
+class helpers {
+load_config(path)
+load_dataset(path)
+}
+
+class csvfile
+class cfg
+class outdir
+
+univariat ..> helpers
+helpers ..> cfg
+helpers ..> csvfile
+univariat ..> cfg
+univariat --> outdir
+
+note right of univariat
+  Sequence run(cfg):
+  1. load_dataset() -> notes
+  2. compute_descriptive_stats(notes)
+  3. detect_outliers_iqr(df, 1.5)
+  4. detect_outliers_zscore(df, 2.0)
+  5. plot_histogram() + plot_boxplot()
+  6. write results_question1.json
+end note
+
+@enduml

@@ -1,0 +1,36 @@
+# Configuration file for student dataset generation and analysis.
+# Contains parameters for synthetic data simulation, classification logic,
+# and statistical validation thresholds.
+
+groupe:
+  numero: 31
+  chef: "VAMI NEGUEM YVO FREED"
+
+generation:
+  n_eleves: 150
+  note:
+    mean: 11.8
+    std: 3.1
+    min: 4.0
+    max: 19.5
+  assiduite:
+    mean: 87.5
+    std: 11.0
+    min: 55.0
+    max: 100.0
+  correlation_note_assiduite: 0.58
+  proportion_scientifique: 0.55
+
+orientation:
+  coef_note: 0.42
+  coef_assiduite: 0.028
+  seuil: 7.4
+  bruit_std: 0.85
+
+analysis:
+  iqr_multiplier: 1.5
+  zscore_threshold: 2.0
+  test_size: 0.30
+  random_state: 42
+  residual_threshold_sigma: 1.5
+  pi_half_width_alert: 4.5

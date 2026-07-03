@@ -1,0 +1,64 @@
+@startuml
+skinparam shadowing false
+
+title Architecture globale - Theme D
+
+class app {
+main()
+generate(cfg)
+run_analyses()
+export_csv(df, path)
+}
+
+class hasher {
+normalize_name(name)
+name_to_seed(name)
+}
+
+class gen {
+generate_dataset(seed)
+}
+
+class helpers {
+load_config(path)
+load_dataset(path)
+}
+
+class univariat
+class bivariat
+class clustering
+class classification
+
+class csvfile
+class cfg
+class output
+
+app ..> helpers
+app ..> hasher
+app ..> gen
+app --> csvfile
+
+hasher --> gen
+
+gen ..> cfg
+helpers ..> cfg
+helpers ..> csvfile
+
+univariat ..> helpers
+bivariat ..> helpers
+clustering ..> helpers
+classification ..> helpers
+
+app ..> univariat
+app ..> bivariat
+app ..> clustering
+app ..> classification
+
+univariat --> output
+bivariat --> output
+clustering --> output
+classification --> output
+
+clustering ..> univariat
+
+@enduml

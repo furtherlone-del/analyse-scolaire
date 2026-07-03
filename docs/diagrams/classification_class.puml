@@ -1,0 +1,53 @@
+@startuml
+skinparam shadowing false
+
+title Q4 - Classification supervisee
+
+class classification {
+FEATURES
+TARGET
+RANDOM_STATE
+OUTPUT_DIR
+--
+prepare_data(df, test_size)
+evaluate_model(model, X_test, y_test, name)
+plot_confusion_matrix(model, X_test, y_test, name, path)
+plot_decision_boundary(model, scaler, X, y, name, path)
+analyze_errors(model, X_test, y_test, scaler)
+run(cfg)
+print_report(summary)
+}
+
+class helpers {
+load_config(path)
+load_dataset(path)
+}
+
+class sklearn {
+LogisticRegression
+DecisionTreeClassifier
+train_test_split
+StandardScaler
+confusion_matrix
+classification_report
+}
+
+class outdir
+
+classification ..> helpers
+classification ..> sklearn
+classification --> outdir
+
+note right of classification
+  Sequence run(cfg):
+  1. prepare_data(df) -> split 70/30
+  2. LogisticRegression().fit(X_train, y_train)
+  3. DecisionTreeClassifier(max_depth=4).fit()
+  4. evaluate_model() -> accuracy, precision, recall
+  5. plot_confusion_matrix() for both models
+  6. plot_decision_boundary() for best model
+  7. analyze_errors() -> FP, FN, risks
+  8. write results_question4.json
+end note
+
+@enduml

@@ -1,0 +1,53 @@
+@startuml
+skinparam shadowing false
+
+title Q2 - Analyse bivariee
+
+class bivariat {
+X_COL
+Y_COL
+OUTPUT_DIR
+--
+test_normality(series)
+choose_correlation_method(x, y, norm_x, norm_y)
+interpret_correlation(r, method)
+fit_linear_regression(x, y)
+prediction_interval(x_new, model, x, conf)
+assess_reliability(x, model, alert_hw)
+find_counter_examples(df, model, thresh)
+plot_scatter_regression(df, model, x, path)
+run(cfg)
+print_report(summary)
+}
+
+class helpers {
+load_config(path)
+load_dataset(path)
+}
+
+class scipy {
+shapiro(series)
+pearsonr(x, y)
+spearmanr(x, y)
+linregress(x, y)
+t_ppf(q, df)
+}
+
+class outdir
+
+bivariat ..> helpers
+bivariat ..> scipy
+bivariat --> outdir
+
+note right of bivariat
+  Sequence run(cfg):
+  1. test_normality(attendance) and test_normality(grade)
+  2. choose_correlation_method() -> Spearman
+  3. fit_linear_regression(x, y) -> OLS
+  4. assess_reliability(x, model) -> PI 95%
+  5. find_counter_examples(df, model)
+  6. plot_scatter_regression()
+  7. write results_question2.json
+end note
+
+@enduml

@@ -1,0 +1,52 @@
+@startuml
+skinparam shadowing false
+
+title Q3 - Clustering K-Means
+
+class clustering {
+FEATURES
+K_RANGE
+RANDOM_STATE
+OUTPUT_DIR
+--
+normalize_data(df)
+elbow_analysis(X)
+silhouette_analysis(X)
+determine_optimal_k(inertias, silhouettes)
+characterize_clusters(df, kmeans)
+plot_elbow_silhouette(inertias, silhouettes, k, path)
+plot_clusters(df, kmeans, path)
+run(cfg)
+print_report(summary)
+}
+
+class helpers {
+load_config(path)
+load_dataset(path)
+}
+
+class sklearn {
+KMeans
+StandardScaler
+silhouette_score
+}
+
+class outdir
+
+clustering ..> helpers
+clustering ..> sklearn
+clustering --> outdir
+
+note right of clustering
+  Sequence run(cfg):
+  1. normalize_data(df)
+  2. elbow_analysis(X_norm)
+  3. silhouette_analysis(X_norm)
+  4. determine_optimal_k() -> k = 2
+  5. KMeans(n_clusters = 2)
+  6. characterize_clusters()
+  7. verify coherence with Q1 outliers
+  8. write results_question3.json
+end note
+
+@enduml
