@@ -21,7 +21,7 @@ from sklearn.tree import DecisionTreeClassifier, plot_tree
 
 from ..utils.helpers import load_config, load_dataset
 
-OUTPUT_DIR = Path("output/question4")
+OUTPUT_DIR = Path("output/classification")
 FEATURES = ["average_grade", "attendance"]
 TARGET = "major"
 RANDOM_STATE = 42
@@ -138,7 +138,7 @@ def run(cfg: dict) -> dict:
         "principal_synthesis": _build_synthesis(selected[1], err),
     }
 
-    with open(OUTPUT_DIR / "results_question4.json", "w", encoding="utf-8") as f:
+    with open(OUTPUT_DIR / "results_classification.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     return summary
 

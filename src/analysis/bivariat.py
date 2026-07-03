@@ -16,7 +16,7 @@ from scipy import stats
 
 from ..utils.helpers import load_config, load_dataset
 
-OUTPUT_DIR = Path("output/question2")
+OUTPUT_DIR = Path("output/bivariate")
 X_COL = "attendance"
 Y_COL = "average_grade"
 
@@ -195,7 +195,7 @@ def run(cfg: dict) -> dict:
         "counter_examples": counter_examples,
     }
 
-    with open(OUTPUT_DIR / "results_question2.json", "w", encoding="utf-8") as f:
+    with open(OUTPUT_DIR / "results_bivariate.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     return summary
 

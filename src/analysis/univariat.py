@@ -14,7 +14,7 @@ import pandas as pd
 
 from ..utils.helpers import load_config, load_dataset
 
-OUTPUT_DIR = Path("output/question1")
+OUTPUT_DIR = Path("output/univariate")
 INDICATOR = "average_grade"
 INDICATOR_LABEL = "Average grade (/20)"
 
@@ -148,7 +148,7 @@ def run(cfg: dict) -> dict:
         },
     }
 
-    with open(OUTPUT_DIR / "results_question1.json", "w", encoding="utf-8") as f:
+    with open(OUTPUT_DIR / "results_univariate.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     return summary
 

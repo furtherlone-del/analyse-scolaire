@@ -19,7 +19,6 @@ generation:
     min: 55.0
     max: 100.0
   correlation_note_assiduite: 0.58
-  proportion_scientifique: 0.55
 
 orientation:
   coef_note: 0.42

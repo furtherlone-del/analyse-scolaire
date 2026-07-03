@@ -18,7 +18,7 @@ from sklearn.preprocessing import StandardScaler
 
 from ..utils.helpers import load_config, load_dataset
 
-OUTPUT_DIR = Path("output/question3")
+OUTPUT_DIR = Path("output/clustering")
 FEATURES = ["average_grade", "attendance"]
 K_RANGE = range(2, 9)
 RANDOM_STATE = 42
@@ -128,7 +128,7 @@ def run(cfg: dict) -> dict:
     plot_clusters(df, kmeans, OUTPUT_DIR / "clusters_attendance_grade.png")
 
     # Retrieve Q1 outliers for consistency check
-    q1_path = Path("output/question1/results_question1.json")
+    q1_path = Path("output/univariate/results_univariate.json")
     outliers_z_ids = set()
     if q1_path.exists():
         with open(q1_path) as f:
@@ -146,14 +146,14 @@ def run(cfg: dict) -> dict:
     summary = {
         "k_selection": {"k_selected": optimal_k, "inertias": inertias, "silhouettes": silhouettes},
         "profiles": profiles,
-        "consistency_question1": {
+        "consistency_univariate": {
             "outliers_z_ids": sorted(outliers_z_ids),
             "distribution_in_clusters": coherence,
         },
         "principal_synthesis": _build_synthesis(profiles, coherence, total_outliers),
     }
 
-    with open(OUTPUT_DIR / "results_question3.json", "w", encoding="utf-8") as f:
+    with open(OUTPUT_DIR / "results_clustering.json", "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     return summary
 
