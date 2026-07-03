@@ -7,7 +7,7 @@ par l'analyse univariée, bivariée et non supervisée.
 ## Structure du projet
 
 ```
-INF232_TP_GROUPEXX/
+INF232_TP_GROUPE31/
 ├── app.py                     # Point d'entrée — génération + 4 analyses
 ├── config/config.yaml         # Paramètres (génération, orientation, analyse)
 ├── data/

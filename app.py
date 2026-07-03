@@ -21,12 +21,6 @@ def export_csv(df: pd.DataFrame, path: Path) -> Path:
     return path
 
 
-def export_json(df: pd.DataFrame, path: Path) -> Path:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    df.to_json(path, orient="records", force_ascii=False, indent=2)
-    return path
-
-
 def generate(cfg: dict) -> pd.DataFrame:
     chef = cfg["groupe"]["chef"]
     normalized = normalize_name(chef)

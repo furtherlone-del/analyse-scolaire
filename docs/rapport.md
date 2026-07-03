@@ -1,6 +1,6 @@
 # Rapport — Thème D : Établissement scolaire secondaire
 
-**Groupe :** INF232_TP_GROUPEXX — **Chef de groupe :** VAMI NEGUEM YVO FREED
+**Groupe :** INF232_TP_GROUPE31 — **Chef de groupe :** VAMI NEGUEM YVO FREED
 **Langage :** Python 3 — NumPy, Pandas, SciPy, Matplotlib, Scikit-learn
 
 ---
@@ -275,4 +275,4 @@ Les données de votre établissement révèlent une structure claire : les élè
 
 ---
 
-*Graine : 1976473691 — Groupe INF232_TP_GROUPEXX — Juillet 2026*
+*Graine : 1976473691 — Groupe INF232_TP_GROUPE31 — Juillet 2026*
