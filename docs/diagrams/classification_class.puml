@@ -1,53 +1,62 @@
-@startuml
+@startuml classification_class
+
+' Design adjustments for high readability
+skinparam classAttributeIconSize 0
 skinparam shadowing false
-
-title Q4 - Classification supervisee
-
-class classification {
-FEATURES
-TARGET
-RANDOM_STATE
-OUTPUT_DIR
---
-prepare_data(df, test_size)
-evaluate_model(model, X_test, y_test, name)
-plot_confusion_matrix(model, X_test, y_test, name, path)
-plot_decision_boundary(model, scaler, X, y, name, path)
-analyze_errors(model, X_test, y_test, scaler)
-run(cfg)
-print_report(summary)
+skinparam class {
+    BackgroundColor White
+    BorderColor #333333
+    ArrowColor #666666
+}
+skinparam note {
+    BackgroundColor #F6F8FA
+    BorderColor #D1D5DB
 }
 
-class helpers {
-load_config(path)
-load_dataset(path)
+package src.utils {
+    class helpers <<module>> {
+        + load_config(path: Path) : dict
+        + load_dataset(path: Path) : DataFrame
+    }
 }
 
-class sklearn {
-LogisticRegression
-DecisionTreeClassifier
-train_test_split
-StandardScaler
-confusion_matrix
-classification_report
+package src.analysis {
+    class classification <<module>> {
+        .. Configuration ..
+        - OUTPUT_DIR : Path = "output/classification"
+        - FEATURES : list[str] = ["average_grade", "attendance"]
+        - TARGET : str = "major"
+        - RANDOM_STATE : int = 42
+        
+        __ Data Preparation __
+        + prepare_data(df: DataFrame, test_size: float) : tuple
+        
+        __ Model Training & Evaluation __
+        + evaluate_model(model, X_test: ndarray, y_test: ndarray, name: str) : dict
+        
+        __ Plotting & Visualizations __
+        + plot_confusion_matrix(model, X_test: ndarray, y_test: ndarray, name: str, path: Path) : void
+        + plot_decision_boundary(model, scaler, X_train, y_train, X_test, y_test, name: str, path: Path) : void
+        
+        __ Error & Risk Analysis __
+        + analyze_errors(model, X_test: ndarray, y_test: ndarray, scaler: StandardScaler) : dict
+        
+        __ Execution & Report __
+        + run(cfg: dict) : dict
+        - _build_synthesis(metrics: dict, err: dict) : str
+        + print_report(summary: dict) : void
+    }
 }
 
-class outdir
-
-classification ..> helpers
-classification ..> sklearn
-classification --> outdir
-
-note right of classification
-  Sequence run(cfg):
-  1. prepare_data(df) -> split 70/30
-  2. LogisticRegression().fit(X_train, y_train)
-  3. DecisionTreeClassifier(max_depth=4).fit()
-  4. evaluate_model() -> accuracy, precision, recall
-  5. plot_confusion_matrix() for both models
-  6. plot_decision_boundary() for best model
-  7. analyze_errors() -> FP, FN, risks
-  8. write results_question4.json
+note bottom of classification
+  <b>Question 4 — Major Prediction (Supervised ML)</b>
+  • Splits data (70% train / 30% test) and standardizes features.
+  • Trains and compares Logistic Regression & Decision Tree models.
+  • Performs detailed error analysis (False Positives / False Negatives).
+  • Assesses the pedagogical risks of misclassification.
 end note
+
+classification ..> helpers : uses
+classification ..> "output/classification/" : writes JSON & PNG
 
 @enduml

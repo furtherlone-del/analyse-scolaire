@@ -1,53 +1,61 @@
-@startuml
+@startuml bivariat_class
+
+' Design adjustments for high readability
+skinparam classAttributeIconSize 0
 skinparam shadowing false
-
-title Q2 - Analyse bivariee
-
-class bivariat {
-X_COL
-Y_COL
-OUTPUT_DIR
---
-test_normality(series)
-choose_correlation_method(x, y, norm_x, norm_y)
-interpret_correlation(r, method)
-fit_linear_regression(x, y)
-prediction_interval(x_new, model, x, conf)
-assess_reliability(x, model, alert_hw)
-find_counter_examples(df, model, thresh)
-plot_scatter_regression(df, model, x, path)
-run(cfg)
-print_report(summary)
+skinparam class {
+    BackgroundColor White
+    BorderColor #333333
+    ArrowColor #666666
+}
+skinparam note {
+    BackgroundColor #F6F8FA
+    BorderColor #D1D5DB
 }
 
-class helpers {
-load_config(path)
-load_dataset(path)
+package src.utils {
+    class helpers <<module>> {
+        + load_config(path: Path) : dict
+        + load_dataset(path: Path) : DataFrame
+    }
 }
 
-class scipy {
-shapiro(series)
-pearsonr(x, y)
-spearmanr(x, y)
-linregress(x, y)
-t_ppf(q, df)
+package src.analysis {
+    class bivariat <<module>> {
+        .. Configuration ..
+        - OUTPUT_DIR : Path = "output/bivariate"
+        - X_COL : str = "attendance"
+        - Y_COL : str = "average_grade"
+        
+        __ Normality & Correlation __
+        + test_normality(series: Series) : dict
+        + choose_correlation_method(x: ndarray, y: ndarray, norm_x: bool, norm_y: bool) : tuple
+        + interpret_correlation(r: float, method: str) : str
+        
+        __ OLS Linear Regression __
+        + fit_linear_regression(x: ndarray, y: ndarray) : dict
+        + prediction_interval(x_new: ndarray, model: dict, x: ndarray, confidence: float) : tuple
+        
+        __ Reliability & Counter-Examples __
+        + assess_reliability(x: ndarray, model: dict, alert_half_width: float) : dict
+        + find_counter_examples(df: DataFrame, model: dict, threshold_sigma: float) : dict
+        
+        __ Visualization & Report __
+        + plot_scatter_regression(df: DataFrame, model: dict, x: ndarray, output_path: Path, threshold_sigma: float) : void
+        + run(cfg: dict) : dict
+        + print_report(summary: dict) : void
+    }
 }
 
-class outdir
-
-bivariat ..> helpers
-bivariat ..> scipy
-bivariat --> outdir
-
-note right of bivariat
-  Sequence run(cfg):
-  1. test_normality(attendance) and test_normality(grade)
-  2. choose_correlation_method() -> Spearman
-  3. fit_linear_regression(x, y) -> OLS
-  4. assess_reliability(x, model) -> PI 95%
-  5. find_counter_examples(df, model)
-  6. plot_scatter_regression()
-  7. write results_question2.json
+note bottom of bivariat
+  <b>Question 2 — Relation between Attendance & Grade</b>
+  • Tests for normality (Shapiro-Wilk) and computes correlation (Pearson/Spearman).
+  • Models linear regression to estimate grade based on attendance rate.
+  • Evaluates the reliability zones and identifies counter-example students.
+  • Generates regression scatter plots and residuals charts.
 end note
+
+bivariat ..> helpers : uses
+bivariat ..> "output/bivariate/" : writes JSON & PNG
 
 @enduml

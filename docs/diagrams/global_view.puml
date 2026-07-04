@@ -1,64 +1,101 @@
-@startuml
+@startuml global_view
+
 skinparam shadowing false
-
-title Architecture globale - Theme D
-
-class app {
-main()
-generate(cfg)
-run_analyses()
-export_csv(df, path)
+skinparam package {
+    BackgroundColor White
+    BorderColor #333333
+}
+skinparam component {
+    BackgroundColor White
+    BorderColor #333333
+    ArrowColor #666666
+}
+skinparam file {
+    BackgroundColor White
+    BorderColor #333333
+}
+skinparam folder {
+    BackgroundColor White
+    BorderColor #333333
 }
 
-class hasher {
-normalize_name(name)
-name_to_seed(name)
+' Color coding different system layers for high intuitiveness
+package "Configuration" #F3F4F6 {
+    file "config.yaml" as config_file
 }
 
-class gen {
-generate_dataset(seed)
+package "Data Files" #E5E7EB {
+    file "students_data.csv" as students_data
 }
 
-class helpers {
-load_config(path)
-load_dataset(path)
+package "Generated Outputs" #FEF3C7 {
+    folder "univariate" as out_uni
+    folder "bivariate" as out_biv
+    folder "clustering" as out_clu
+    folder "classification" as out_cla
 }
 
-class univariat
-class bivariat
-class clustering
-class classification
+file "app.py" as app_entry
 
-class csvfile
-class cfg
-class output
+package "src" #F9FAFB {
+    package "utils (Helpers)" as utils #F3F4F6 {
+        component helpers <<module>>
+    }
 
-app ..> helpers
-app ..> hasher
-app ..> gen
-app --> csvfile
+    package "generator (Step 0)" as generator #ECFDF5 {
+        component hasher <<module>>
+        component data_generator <<module>>
+    }
 
-hasher --> gen
+    package "analysis (Questions 1 to 4)" as analysis #FFFBEB {
+        component univariat <<module>>
+        component bivariat <<module>>
+        component clustering <<module>>
+        component classification <<module>>
+    }
+}
 
-gen ..> cfg
-helpers ..> cfg
-helpers ..> csvfile
+' Description Notes associated with unique components to avoid PlantUML nested namespace errors
+note top of data_generator
+  <b>Data Generation Phase</b>
+  Computes reproducible seed from names and
+  generates the simulated student dataset.
+end note
 
-univariat ..> helpers
-bivariat ..> helpers
-clustering ..> helpers
-classification ..> helpers
+note top of univariat
+  <b>Statistical Analysis Phase</b>
+  Executes the 4 study steps corresponding to
+  the project questions (Questions 1 to 4).
+end note
 
-app ..> univariat
-app ..> bivariat
-app ..> clustering
-app ..> classification
+' Relations
+app_entry ..> config_file : reads config
+app_entry ..> helpers : uses load_config
+app_entry ..> data_generator : uses generate_dataset
+app_entry ..> univariat : runs Question 1
+app_entry ..> bivariat : runs Question 2
+app_entry ..> clustering : runs Question 3
+app_entry ..> classification : runs Question 4
 
-univariat --> output
-bivariat --> output
-clustering --> output
-classification --> output
+data_generator ..> hasher : uses name_to_seed & normalize_name
+data_generator ..> config_file : reads parameters
+data_generator ..> students_data : writes generated CSV
 
-clustering ..> univariat
+univariat ..> helpers : uses load_config & load_dataset
+univariat ..> students_data : reads
+univariat ..> out_uni : writes JSON & PNG
+
+bivariat ..> helpers : uses load_config & load_dataset
+bivariat ..> students_data : reads
+bivariat ..> out_biv : writes JSON & PNG
+
+clustering ..> helpers : uses load_config & load_dataset
+clustering ..> students_data : reads
+clustering ..> out_uni : reads results_univariate.json (consistency check)
+clustering ..> out_clu : writes JSON & PNG
+
+classification ..> helpers : uses load_config & load_dataset
+classification ..> students_data : reads
+classification ..> out_cla : writes JSON & PNG
 
 @enduml

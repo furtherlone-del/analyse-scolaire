@@ -1,52 +1,65 @@
-@startuml
+@startuml clustering_class
+
+' Design adjustments for high readability
+skinparam classAttributeIconSize 0
 skinparam shadowing false
-
-title Q3 - Clustering K-Means
-
-class clustering {
-FEATURES
-K_RANGE
-RANDOM_STATE
-OUTPUT_DIR
---
-normalize_data(df)
-elbow_analysis(X)
-silhouette_analysis(X)
-determine_optimal_k(inertias, silhouettes)
-characterize_clusters(df, kmeans)
-plot_elbow_silhouette(inertias, silhouettes, k, path)
-plot_clusters(df, kmeans, path)
-run(cfg)
-print_report(summary)
+skinparam class {
+    BackgroundColor White
+    BorderColor #333333
+    ArrowColor #666666
+}
+skinparam note {
+    BackgroundColor #F6F8FA
+    BorderColor #D1D5DB
 }
 
-class helpers {
-load_config(path)
-load_dataset(path)
+package src.utils {
+    class helpers <<module>> {
+        + load_config(path: Path) : dict
+        + load_dataset(path: Path) : DataFrame
+    }
 }
 
-class sklearn {
-KMeans
-StandardScaler
-silhouette_score
+package src.analysis {
+    class clustering <<module>> {
+        .. Configuration ..
+        - OUTPUT_DIR : Path = "output/clustering"
+        - FEATURES : list[str] = ["average_grade", "attendance"]
+        - K_RANGE : range = range(2, 9)
+        - RANDOM_STATE : int = 42
+        
+        __ Data Normalization __
+        + normalize_data(df: DataFrame) : tuple
+        
+        __ Optimal K Selection __
+        + elbow_analysis(X: DataFrame) : dict
+        + silhouette_analysis(X: DataFrame) : dict
+        + determine_optimal_k(inertias: dict, silhouettes: dict) : int
+        
+        __ Cluster Profiling __
+        + characterize_clusters(df: DataFrame, kmeans: KMeans) : dict
+        
+        __ Consistency & Plotting __
+        + plot_elbow_silhouette(inertias: dict, silhouettes: dict, optimal_k: int, output_path: Path) : void
+        + plot_clusters(df: DataFrame, kmeans: KMeans, output_path: Path) : void
+        
+        __ Execution & Report __
+        + run(cfg: dict) : dict
+        - _build_synthesis(profiles: dict, coherence: dict, total_outliers: int) : str
+        + print_report(summary: dict) : void
+    }
 }
 
-class outdir
-
-clustering ..> helpers
-clustering ..> sklearn
-clustering --> outdir
-
-note right of clustering
-  Sequence run(cfg):
-  1. normalize_data(df)
-  2. elbow_analysis(X_norm)
-  3. silhouette_analysis(X_norm)
-  4. determine_optimal_k() -> k = 2
-  5. KMeans(n_clusters = 2)
-  6. characterize_clusters()
-  7. verify coherence with Q1 outliers
-  8. write results_question3.json
+note bottom of clustering
+  <b>Question 3 — K-Means Student Profiling</b>
+  • Standardizes grade and attendance before clustering.
+  • Determines optimal k via Silhouette Score and Elbow Method (K-Means).
+  • Characterizes student profiles (centroids) and compares them with Q1 outliers.
+  • Saves the silhouette/elbow curves and cluster scatter plots.
 end note
+
+clustering ..> helpers : uses
+clustering ..> "output/univariate/results_univariate.json" : reads for consistency check
+clustering ..> "output/clustering/" : writes JSON & PNG
 
 @enduml

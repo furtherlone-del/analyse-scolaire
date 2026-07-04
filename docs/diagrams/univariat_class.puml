@@ -1,45 +1,56 @@
-@startuml
+@startuml univariat_class
+
+' Design adjustments for high readability
+skinparam classAttributeIconSize 0
 skinparam shadowing false
-
-title Q1 - Analyse univariee
-
-class univariat {
-INDICATOR
-INDICATOR_LABEL
-OUTPUT_DIR
---
-compute_descriptive_stats(series)
-detect_outliers_iqr(df, column, multiplier)
-detect_outliers_zscore(df, column, threshold)
-plot_histogram(series, stats, path)
-plot_boxplot(series, bounds, outliers, path)
-run(cfg)
-print_report(summary)
+skinparam class {
+    BackgroundColor White
+    BorderColor #333333
+    ArrowColor #666666
+}
+skinparam note {
+    BackgroundColor #F6F8FA
+    BorderColor #D1D5DB
 }
 
-class helpers {
-load_config(path)
-load_dataset(path)
+package src.utils {
+    class helpers <<module>> {
+        + load_config(path: Path) : dict
+        + load_dataset(path: Path) : DataFrame
+    }
 }
 
-class csvfile
-class cfg
-class outdir
+package src.analysis {
+    class univariat <<module>> {
+        .. Configuration ..
+        - OUTPUT_DIR : Path = "output/univariate"
+        - INDICATOR : str = "average_grade"
+        
+        __ Statistical Calculations __
+        + compute_descriptive_stats(series: Series) : dict
+        
+        __ Outlier Detection __
+        + detect_outliers_iqr(df: DataFrame, column: str, multiplier: float) : tuple
+        + detect_outliers_zscore(df: DataFrame, column: str, threshold: float) : tuple
+        
+        __ Data Visualization __
+        + plot_histogram(series: Series, stats: dict, output_path: Path) : void
+        + plot_boxplot(series: Series, iqr_bounds: dict, outliers_z: DataFrame, output_path: Path) : void
+        
+        __ Execution & Report __
+        + run(cfg: dict) : dict
+        + print_report(summary: dict) : void
+    }
+}
 
-univariat ..> helpers
-helpers ..> cfg
-helpers ..> csvfile
-univariat ..> cfg
-univariat --> outdir
-
-note right of univariat
-  Sequence run(cfg):
-  1. load_dataset() -> notes
-  2. compute_descriptive_stats(notes)
-  3. detect_outliers_iqr(df, 1.5)
-  4. detect_outliers_zscore(df, 2.0)
-  5. plot_histogram() + plot_boxplot()
-  6. write results_question1.json
+note bottom of univariat
+  <b>Question 1 — Notes Distribution & Outliers</b>
+  • Computes mean, median, standard deviation, and quantiles.
+  • Detects atypical students using Z-Score and Interquartile Range (IQR).
+  • Generates a histogram and a boxplot to output/.
 end note
+
+univariat ..> helpers : uses
+univariat ..> "output/univariate/" : writes JSON & PNG
 
 @enduml
